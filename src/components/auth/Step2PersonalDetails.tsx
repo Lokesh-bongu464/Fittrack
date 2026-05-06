@@ -14,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/authStore";
 import { step2Schema, type Step2FormData } from "@/lib/schemas";
 
@@ -131,28 +132,32 @@ export default function Step2PersonalDetails() {
         {/* Gender */}
         <div className="space-y-2">
           <Label>Gender</Label>
-          <Select
-            defaultValue={step2.gender || undefined}
-            onValueChange={(val) =>
-              setValue("gender", val as Step2FormData["gender"], {
-                shouldValidate: true,
-              })
-            }
-          >
-            <SelectTrigger
-              className={errors.gender ? "border-destructive" : ""}
-            >
-              <SelectValue placeholder="Select gender" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="male">Male</SelectItem>
-              <SelectItem value="female">Female</SelectItem>
-              <SelectItem value="other">Other</SelectItem>
-              <SelectItem value="prefer-not-to-say">
-                Prefer not to say
-              </SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="grid grid-cols-4 gap-2">
+            {[
+              { value: "male", label: "Male" },
+              { value: "female", label: "Female" },
+              { value: "other", label: "Other" },
+              { value: "prefer-not-to-say", label: "Skip" },
+            ].map((option) => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() =>
+                  setValue("gender", option.value as Step2FormData["gender"], {
+                    shouldValidate: true,
+                  })
+                }
+                className={cn(
+                  "rounded-lg border-2 px-3 py-2 text-sm font-medium transition-all duration-200",
+                  watch("gender") === option.value
+                    ? "border-primary bg-primary/10 text-primary"
+                    : "border-border hover:border-primary/30 text-muted-foreground hover:text-foreground"
+                )}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
           {errors.gender && (
             <p className="text-sm text-destructive">{errors.gender.message}</p>
           )}
