@@ -153,7 +153,12 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       });
 
       setToken(res.token);
-      set({ isLoading: false, isComplete: true });
+      // Clear sensitive data from memory
+      set({
+        isLoading: false,
+        isComplete: true,
+        step1: { ...get().step1, password: "", confirmPassword: "" },
+      });
       return true;
     } catch (err) {
       const message = err instanceof Error ? err.message : "Registration failed";

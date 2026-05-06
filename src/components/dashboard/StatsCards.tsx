@@ -48,7 +48,7 @@ export default function StatsCards() {
                   >
                     {Icon && <Icon className="h-5 w-5" />}
                   </div>
-                  {stat.trend.value > 0 && (
+                  {stat.trend.value !== 0 && (
                     <div
                       className={`flex items-center gap-1 text-xs font-medium ${
                         stat.trend.positive
@@ -61,7 +61,7 @@ export default function StatsCards() {
                       ) : (
                         <TrendingDown className="h-3 w-3" />
                       )}
-                      +{stat.trend.value}
+                      {stat.trend.positive ? "+" : "-"}{stat.trend.value}
                     </div>
                   )}
                 </div>
