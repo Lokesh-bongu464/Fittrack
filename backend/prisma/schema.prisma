@@ -1,0 +1,50 @@
+// FitTrack Database Schema — MongoDB
+// Use MongoDB Atlas (free tier) for both dev and production
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  fullName  String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  profile   Profile?
+}
+
+model Profile {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String   @unique @db.ObjectId
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  dateOfBirth   String?
+  gender        String?
+  height        Float?
+  heightUnit    String   @default("cm")
+  weight        Float?
+  weightUnit    String   @default("kg")
+
+  goals         String[]
+  activityLevel String?
+
+  username      String?  @unique
+  bio           String?
+  avatarUrl     String?
+
+  workoutReminders  Boolean @default(true)
+  weeklyReports     Boolean @default(true)
+  communityUpdates  Boolean @default(false)
+  promotionalEmails Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
