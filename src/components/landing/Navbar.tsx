@@ -68,7 +68,7 @@ export default function Navbar() {
           <div className="hidden lg:flex lg:items-center lg:gap-3">
             <ThemeToggle />
             <Button variant="ghost" asChild>
-              <Link href="/auth">Sign In</Link>
+              <Link href="/auth?mode=login">Sign In</Link>
             </Button>
             <Button asChild>
               <Link href="/auth">Get Started</Link>
@@ -113,7 +113,7 @@ export default function Navbar() {
                       asChild
                       onClick={() => setOpen(false)}
                     >
-                      <Link href="/auth">Sign In</Link>
+                      <Link href="/auth?mode=login">Sign In</Link>
                     </Button>
                     <Button
                       className="w-full"

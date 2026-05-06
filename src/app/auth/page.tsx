@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Logo from "@/components/shared/Logo";
 import ThemeToggle from "@/components/shared/ThemeToggle";
@@ -11,6 +13,7 @@ import Step3FitnessGoals from "@/components/auth/Step3FitnessGoals";
 import Step4ActivityLevel from "@/components/auth/Step4ActivityLevel";
 import Step5ProfileSetup from "@/components/auth/Step5ProfileSetup";
 import WelcomeScreen from "@/components/auth/WelcomeScreen";
+import LoginForm from "@/components/auth/LoginForm";
 import { useAuthStore } from "@/store/authStore";
 
 const stepComponents = [
@@ -23,6 +26,10 @@ const stepComponents = [
 
 export default function AuthPage() {
   const { currentStep, isComplete } = useAuthStore();
+  const searchParams = useSearchParams();
+  const [mode, setMode] = useState<"login" | "register">(
+    searchParams.get("mode") === "login" ? "login" : "register"
+  );
 
   const StepComponent = stepComponents[currentStep - 1];
 
@@ -39,17 +46,29 @@ export default function AuthPage() {
       {/* Main Content */}
       <main className="flex-1 flex items-center justify-center px-4 py-8">
         <div className="w-full max-w-md">
-          {!isComplete && (
-            <div className="mb-8">
-              <StepIndicator currentStep={currentStep} totalSteps={5} />
-            </div>
-          )}
-
           <AnimatePresence mode="wait">
             {isComplete ? (
               <WelcomeScreen key="welcome" />
+            ) : mode === "login" ? (
+              <LoginForm key="login" onSwitchToRegister={() => setMode("register")} />
             ) : (
-              <StepComponent key={currentStep} />
+              <div key="register">
+                <div className="mb-8">
+                  <StepIndicator currentStep={currentStep} totalSteps={5} />
+                </div>
+                <StepComponent />
+                {currentStep === 1 && (
+                  <p className="text-center text-sm text-muted-foreground mt-6">
+                    Already have an account?{" "}
+                    <button
+                      onClick={() => setMode("login")}
+                      className="text-primary font-medium hover:underline"
+                    >
+                      Sign in
+                    </button>
+                  </p>
+                )}
+              </div>
             )}
           </AnimatePresence>
         </div>
