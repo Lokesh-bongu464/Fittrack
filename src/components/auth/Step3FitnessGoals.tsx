@@ -10,6 +10,7 @@ import {
   Brain,
   ArrowLeft,
   ArrowRight,
+  Check,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -80,13 +81,18 @@ export default function Step3FitnessGoals() {
               type="button"
               onClick={() => toggleGoal(goal.id)}
               className={cn(
-                "flex flex-col items-center gap-3 rounded-xl border-2 p-4 transition-all duration-200",
+                "relative flex flex-col items-center gap-3 rounded-xl border-2 p-4 transition-all duration-200",
                 isSelected
                   ? "border-primary bg-primary/5 shadow-sm"
                   : "border-border hover:border-primary/30 hover:bg-muted/50"
               )}
               whileTap={{ scale: 0.97 }}
             >
+              {isSelected && (
+                <div className="absolute top-2 right-2 h-5 w-5 rounded-full bg-primary flex items-center justify-center">
+                  <Check className="h-3 w-3 text-primary-foreground" />
+                </div>
+              )}
               <div
                 className={cn(
                   "h-10 w-10 rounded-lg flex items-center justify-center transition-colors",
