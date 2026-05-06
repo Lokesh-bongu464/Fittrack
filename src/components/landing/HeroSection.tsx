@@ -157,8 +157,8 @@ export default function HeroSection() {
                 </div>
               </div>
             </div>
-            {/* Decorative floating elements */}
-            <div className="absolute -top-4 -right-4 h-20 w-20 rounded-xl border bg-card shadow-lg flex items-center justify-center animate-bounce [animation-duration:3s]">
+            {/* Decorative floating elements — positioned outside the chart */}
+            <div className="absolute -top-6 -right-6 h-20 w-20 rounded-xl border bg-card shadow-lg flex items-center justify-center animate-bounce [animation-duration:3s]">
               <div className="text-center">
                 <p className="text-2xl font-bold font-heading text-primary">
                   68%
@@ -166,7 +166,7 @@ export default function HeroSection() {
                 <p className="text-[9px] text-muted-foreground">Goal</p>
               </div>
             </div>
-            <div className="absolute -bottom-3 -left-3 h-16 w-32 rounded-xl border bg-card shadow-lg flex items-center gap-2 px-3 animate-bounce [animation-duration:4s] [animation-delay:1s]">
+            <div className="absolute -bottom-6 -left-6 h-16 w-32 rounded-xl border bg-card shadow-lg flex items-center gap-2 px-3 animate-bounce [animation-duration:4s] [animation-delay:1s]">
               <div className="h-8 w-8 rounded-full bg-success/20 flex items-center justify-center">
                 <span className="text-success text-sm font-bold">✓</span>
               </div>
