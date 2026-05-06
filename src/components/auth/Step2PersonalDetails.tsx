@@ -61,12 +61,66 @@ export default function Step2PersonalDetails() {
         {/* Date of Birth */}
         <div className="space-y-2">
           <Label htmlFor="dateOfBirth">Date of Birth</Label>
-          <Input
-            id="dateOfBirth"
-            type="date"
-            {...register("dateOfBirth")}
-            className={errors.dateOfBirth ? "border-destructive" : ""}
-          />
+          <div className="grid grid-cols-3 gap-2">
+            <div>
+              <Select
+                defaultValue={step2.dateOfBirth ? step2.dateOfBirth.split("-")[1] : undefined}
+                onValueChange={(val) => {
+                  const current = watch("dateOfBirth") || "--";
+                  const parts = current.split("-");
+                  setValue("dateOfBirth", `${parts[0] || "2000"}-${val}-${parts[2] || "01"}`, { shouldValidate: true });
+                }}
+              >
+                <SelectTrigger className={errors.dateOfBirth ? "border-destructive" : ""}>
+                  <SelectValue placeholder="Month" />
+                </SelectTrigger>
+                <SelectContent>
+                  {["January","February","March","April","May","June","July","August","September","October","November","December"].map((m, i) => (
+                    <SelectItem key={m} value={String(i + 1).padStart(2, "0")}>{m}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Select
+                defaultValue={step2.dateOfBirth ? step2.dateOfBirth.split("-")[2] : undefined}
+                onValueChange={(val) => {
+                  const current = watch("dateOfBirth") || "--";
+                  const parts = current.split("-");
+                  setValue("dateOfBirth", `${parts[0] || "2000"}-${parts[1] || "01"}-${val}`, { shouldValidate: true });
+                }}
+              >
+                <SelectTrigger className={errors.dateOfBirth ? "border-destructive" : ""}>
+                  <SelectValue placeholder="Day" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Array.from({ length: 31 }, (_, i) => (
+                    <SelectItem key={i + 1} value={String(i + 1).padStart(2, "0")}>{i + 1}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Select
+                defaultValue={step2.dateOfBirth ? step2.dateOfBirth.split("-")[0] : undefined}
+                onValueChange={(val) => {
+                  const current = watch("dateOfBirth") || "--";
+                  const parts = current.split("-");
+                  setValue("dateOfBirth", `${val}-${parts[1] || "01"}-${parts[2] || "01"}`, { shouldValidate: true });
+                }}
+              >
+                <SelectTrigger className={errors.dateOfBirth ? "border-destructive" : ""}>
+                  <SelectValue placeholder="Year" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Array.from({ length: 80 }, (_, i) => {
+                    const year = new Date().getFullYear() - 10 - i;
+                    return <SelectItem key={year} value={String(year)}>{year}</SelectItem>;
+                  })}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
           {errors.dateOfBirth && (
             <p className="text-sm text-destructive">
               {errors.dateOfBirth.message}
