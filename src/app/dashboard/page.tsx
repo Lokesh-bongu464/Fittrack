@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Bell, User } from "lucide-react";
 import Sidebar from "@/components/dashboard/Sidebar";
 import StatsCards from "@/components/dashboard/StatsCards";
@@ -7,8 +8,39 @@ import TodayWorkoutCard from "@/components/dashboard/TodayWorkoutCard";
 import WeeklyChart from "@/components/dashboard/WeeklyChart";
 import QuickActions from "@/components/dashboard/QuickActions";
 import ThemeToggle from "@/components/shared/ThemeToggle";
+import { api } from "@/lib/api";
+
+interface UserData {
+  fullName: string;
+  email: string;
+}
 
 export default function DashboardPage() {
+  const [user, setUser] = useState<UserData | null>(null);
+
+  useEffect(() => {
+    api
+      .getMe()
+      .then((res) => {
+        const u = res.user as unknown as UserData;
+        setUser(u);
+      })
+      .catch(() => {
+        // Fallback if backend is unavailable
+        setUser(null);
+      });
+  }, []);
+
+  const firstName = user?.fullName?.split(" ")[0] || "there";
+  const initials = user?.fullName
+    ? user.fullName
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2)
+    : "U";
+
   return (
     <div className="flex min-h-screen bg-muted/30">
       <Sidebar />
@@ -18,17 +50,18 @@ export default function DashboardPage() {
         <div className="lg:hidden h-14 shrink-0" />
 
         {/* Fixed Top Bar */}
-        <header className="fixed top-0 right-0 left-0 lg:left-[var(--sidebar-width)] z-30 hidden sm:flex items-center justify-between h-16 border-b bg-background/80 backdrop-blur-sm px-4 sm:px-6 lg:px-8 transition-all duration-300"
+        <header
+          className="fixed top-0 right-0 left-0 lg:left-[var(--sidebar-width)] z-30 hidden sm:flex items-center justify-between h-16 border-b bg-background/80 backdrop-blur-sm px-4 sm:px-6 lg:px-8 transition-all duration-300"
           style={{ "--sidebar-width": "256px" } as React.CSSProperties}
         >
           {/* Welcome */}
           <div className="flex items-center gap-3">
             <div className="h-9 w-9 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-bold shrink-0">
-              JD
+              {initials}
             </div>
             <div>
               <h1 className="font-heading text-lg font-bold">
-                Welcome back, John!
+                Welcome back, {firstName}!
               </h1>
             </div>
           </div>
