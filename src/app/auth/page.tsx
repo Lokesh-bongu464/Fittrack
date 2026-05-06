@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -24,7 +24,7 @@ const stepComponents = [
   Step5ProfileSetup,
 ];
 
-export default function AuthPage() {
+function AuthPageContent() {
   const { currentStep, isComplete } = useAuthStore();
   const searchParams = useSearchParams();
   const [mode, setMode] = useState<"login" | "register">(
@@ -34,7 +34,7 @@ export default function AuthPage() {
   const StepComponent = stepComponents[currentStep - 1];
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <>
       {/* Top Bar */}
       <header className="flex items-center justify-between px-4 sm:px-6 lg:px-8 h-16 border-b">
         <Link href="/">
@@ -73,6 +73,16 @@ export default function AuthPage() {
           </AnimatePresence>
         </div>
       </main>
+    </>
+  );
+}
+
+export default function AuthPage() {
+  return (
+    <div className="min-h-screen flex flex-col">
+      <Suspense>
+        <AuthPageContent />
+      </Suspense>
     </div>
   );
 }
