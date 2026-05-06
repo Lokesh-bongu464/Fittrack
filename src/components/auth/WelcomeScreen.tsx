@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { ArrowRight, PartyPopper } from "lucide-react";
 import { motion } from "framer-motion";
@@ -9,10 +9,10 @@ import { useAuthStore } from "@/store/authStore";
 import confetti from "canvas-confetti";
 
 export default function WelcomeScreen() {
-  const { step1, reset } = useAuthStore();
+  const { step1 } = useAuthStore();
+  const rafRef = useRef<number>(0);
 
   useEffect(() => {
-    // Fire confetti on mount
     const duration = 2000;
     const end = Date.now() + duration;
 
@@ -31,11 +31,15 @@ export default function WelcomeScreen() {
       });
 
       if (Date.now() < end) {
-        requestAnimationFrame(frame);
+        rafRef.current = requestAnimationFrame(frame);
       }
     };
 
-    frame();
+    rafRef.current = requestAnimationFrame(frame);
+
+    return () => {
+      cancelAnimationFrame(rafRef.current);
+    };
   }, []);
 
   const firstName = step1.fullName.split(" ")[0] || "there";
@@ -89,7 +93,7 @@ export default function WelcomeScreen() {
         transition={{ delay: 0.5, duration: 0.4 }}
       >
         <Button size="lg" className="gap-2 w-full max-w-xs mx-auto" asChild>
-          <Link href="/dashboard" onClick={() => reset()}>
+          <Link href="/dashboard">
             Go to Dashboard
             <ArrowRight className="h-4 w-4" />
           </Link>
