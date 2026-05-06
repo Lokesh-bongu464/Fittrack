@@ -45,14 +45,13 @@
     "zustand": "^5.0.13"
   },
   "devDependencies": {
-    "@storybook/addon-essentials": "^8.6.14",
-    "@storybook/blocks": "^8.6.14",
     "@storybook/nextjs": "^10.3.6",
     "@storybook/react": "^10.3.6",
     "@types/canvas-confetti": "^1.9.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "ajv": "^8.20.0",
     "eslint": "^8",
     "eslint-config-next": "14.2.35",
     "postcss": "^8",
