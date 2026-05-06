@@ -1,0 +1,193 @@
+"use client";
+
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useAuthStore } from "@/store/authStore";
+import { step2Schema, type Step2FormData } from "@/lib/schemas";
+
+export default function Step2PersonalDetails() {
+  const { step2, setStep2, nextStep, prevStep } = useAuthStore();
+
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    watch,
+    formState: { errors, isValid },
+  } = useForm<Step2FormData>({
+    resolver: zodResolver(step2Schema),
+    defaultValues: {
+      ...step2,
+      gender: step2.gender || undefined,
+    } as Step2FormData,
+    mode: "onChange",
+  });
+
+  const heightUnit = watch("heightUnit");
+  const weightUnit = watch("weightUnit");
+
+  const onSubmit = (data: Step2FormData) => {
+    setStep2(data);
+    nextStep();
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -20 }}
+      transition={{ duration: 0.3, ease: "easeOut" as const }}
+    >
+      <div className="mb-8">
+        <h2 className="font-heading text-2xl font-bold">Personal Details</h2>
+        <p className="text-muted-foreground mt-1">
+          Help us personalize your fitness experience.
+        </p>
+      </div>
+
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+        {/* Date of Birth */}
+        <div className="space-y-2">
+          <Label htmlFor="dateOfBirth">Date of Birth</Label>
+          <Input
+            id="dateOfBirth"
+            type="date"
+            {...register("dateOfBirth")}
+            className={errors.dateOfBirth ? "border-destructive" : ""}
+          />
+          {errors.dateOfBirth && (
+            <p className="text-sm text-destructive">
+              {errors.dateOfBirth.message}
+            </p>
+          )}
+        </div>
+
+        {/* Gender */}
+        <div className="space-y-2">
+          <Label>Gender</Label>
+          <Select
+            defaultValue={step2.gender || undefined}
+            onValueChange={(val) =>
+              setValue("gender", val as Step2FormData["gender"], {
+                shouldValidate: true,
+              })
+            }
+          >
+            <SelectTrigger
+              className={errors.gender ? "border-destructive" : ""}
+            >
+              <SelectValue placeholder="Select gender" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="male">Male</SelectItem>
+              <SelectItem value="female">Female</SelectItem>
+              <SelectItem value="other">Other</SelectItem>
+              <SelectItem value="prefer-not-to-say">
+                Prefer not to say
+              </SelectItem>
+            </SelectContent>
+          </Select>
+          {errors.gender && (
+            <p className="text-sm text-destructive">{errors.gender.message}</p>
+          )}
+        </div>
+
+        {/* Height */}
+        <div className="space-y-2">
+          <Label htmlFor="height">Height</Label>
+          <div className="flex gap-2">
+            <Input
+              id="height"
+              type="number"
+              step="0.1"
+              {...register("height", { valueAsNumber: true })}
+              className={
+                errors.height ? "border-destructive flex-1" : "flex-1"
+              }
+            />
+            <Select
+              defaultValue={heightUnit}
+              onValueChange={(val) =>
+                setValue("heightUnit", val as "cm" | "ft")
+              }
+            >
+              <SelectTrigger className="w-20">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="cm">cm</SelectItem>
+                <SelectItem value="ft">ft</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          {errors.height && (
+            <p className="text-sm text-destructive">{errors.height.message}</p>
+          )}
+        </div>
+
+        {/* Weight */}
+        <div className="space-y-2">
+          <Label htmlFor="weight">Weight</Label>
+          <div className="flex gap-2">
+            <Input
+              id="weight"
+              type="number"
+              step="0.1"
+              {...register("weight", { valueAsNumber: true })}
+              className={
+                errors.weight ? "border-destructive flex-1" : "flex-1"
+              }
+            />
+            <Select
+              defaultValue={weightUnit}
+              onValueChange={(val) =>
+                setValue("weightUnit", val as "kg" | "lbs")
+              }
+            >
+              <SelectTrigger className="w-20">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="kg">kg</SelectItem>
+                <SelectItem value="lbs">lbs</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          {errors.weight && (
+            <p className="text-sm text-destructive">{errors.weight.message}</p>
+          )}
+        </div>
+
+        {/* Navigation */}
+        <div className="flex gap-3 pt-2">
+          <Button
+            type="button"
+            variant="outline"
+            onClick={prevStep}
+            className="gap-2"
+            size="lg"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back
+          </Button>
+          <Button type="submit" className="flex-1 gap-2" size="lg" disabled={!isValid}>
+            Continue
+            <ArrowRight className="h-4 w-4" />
+          </Button>
+        </div>
+      </form>
+    </motion.div>
+  );
+}
