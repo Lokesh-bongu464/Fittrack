@@ -16,7 +16,12 @@ async function request<T>(
     },
   });
 
-  const data = await res.json();
+  let data;
+  try {
+    data = await res.json();
+  } catch {
+    throw new Error("Server error. Please try again later.");
+  }
 
   if (!res.ok) {
     throw new Error(data.error || "Something went wrong");
@@ -52,7 +57,8 @@ export const api = {
 export function setToken(token: string) {
   localStorage.setItem("fittrack-token", token);
   // Also set a cookie so Next.js middleware can read it
-  document.cookie = `fittrack-token=${token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
+  const secure = window.location.protocol === "https:" ? "; Secure" : "";
+  document.cookie = `fittrack-token=${token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax${secure}`;
 }
 
 export function removeToken() {
